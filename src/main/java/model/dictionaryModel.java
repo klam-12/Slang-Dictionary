@@ -1,7 +1,9 @@
 package model;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -100,7 +102,7 @@ public class dictionaryModel {
                 .filter(x -> x.getValue().contains(value))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        //System.out.println(subMap);
+        System.out.println(subMap);
         return subMap;
     }
 
@@ -125,6 +127,46 @@ public class dictionaryModel {
     public void addToHistory(String word){
         this.history.add(word);
     }
+
+    public void exportHistory(){
+        String filename = "history.txt";
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+            bw.write("Keyword");
+            bw.newLine();
+            int size = this.history.size();
+            for(int i = 0; i < size; i++){
+                bw.write(this.history.get(i));
+                bw.newLine();
+            }
+
+            bw.close();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+    public void readHistory() {
+        String filename = "history.txt";
+        String line = "";
+        //String splitBy = ",";
+        try {
+            //parsing a CSV file into BufferedReader class constructor
+            BufferedReader br = new BufferedReader(new FileReader(filename));
+            line = br.readLine(); // omit first line
+
+            while ((line = br.readLine()) != null){
+                this.history.add(line);
+            }
+            br.close();
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
 
 }

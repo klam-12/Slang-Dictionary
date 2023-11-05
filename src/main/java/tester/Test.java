@@ -15,15 +15,20 @@ public class Test {
         dictModel.readFileSlang();
         long start, end;
 
+        dictModel.readHistory();
+        System.out.println(dictModel.getHistory());
         start = System.currentTimeMillis();
-        dictModel.searchDefinition("you");
-        //String value = dictModel.searchKey("SUP");
+        dictModel.searchDefinition("stay");
+        String value = dictModel.searchKey("YAY");
 
         end = System.currentTimeMillis();   // start lấy thời gian theo millisecond
 
-        //System.out.println(value);
+        System.out.println(value);
         System.out.println("Time Millis: " + (end - start));
 
+        dictModel.addToHistory("good");
+        dictModel.addToHistory("YAY");
+        dictModel.exportHistory();
 
     }
 }
