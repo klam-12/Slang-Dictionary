@@ -90,7 +90,7 @@ public class dictionaryModel {
     }
 
     public String searchKey(String key){
-        String value = "Not found";
+        String value = null;
         if(this.currentDict.get(key) != null){
             value = this.currentDict.get(key);
         }

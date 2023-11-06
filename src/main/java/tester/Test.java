@@ -31,10 +31,9 @@ public class Test {
         dictModel.addToHistory("good");
         dictModel.addToHistory("YAY");
         dictModel.exportHistory();
-
  */
-        //dictionaryView dictView = new dictionaryView();
-        // demo = new TabbedPaneDemo();
+
+        dictionaryView dictView = new dictionaryView();
 
     }
 }

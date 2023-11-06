@@ -1,29 +1,41 @@
 package view;
 
-import controller.MenuListener;
+import controller.SearchTabListener;
 import model.dictionaryModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Khanh Lam
  */
 public class dictionaryView extends JFrame {
     private dictionaryModel dictModel;
-    private CardLayout cardLayout;
-    private JPanel cards;
+    private Font normalText = new Font("Arial",Font.PLAIN,14);
+    private Font headingText = new Font("Arial",Font.BOLD,14);
+
+    private JTextField inputField;
+    private JTextArea WordResultArea;
 
     public dictionaryView() {
         this.dictModel = new dictionaryModel();
+
+        // Load database
+        dictModel.readFileSlang();
+        dictModel.readHistory();
+
         this.init();
         this.setVisible(true);
     }
 
     public void init(){
         this.setTitle("Slang Dictionary");
-        this.setSize(500,400);
+        this.setSize(700,600);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -41,44 +53,51 @@ public class dictionaryView extends JFrame {
 //        menu.add(randomBtn);
 //        menu.add(gamesBtn);
 
-        // Menu Bar
-        JMenuBar menuBar = new JMenuBar();
-        MenuListener menuListener = new MenuListener(this);
+        JPanel dictionary = new JPanel(new GridLayout(1, 1));
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setFont(headingText);
 
-        JMenu searchMenu = new JMenu("Search");
-        searchMenu.addMenuListener(menuListener);
+        JComponent panel1 = searchScreen();
+        tabbedPane.addTab("Search",null , panel1);
+        tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 
-        JMenu historyMenu = new JMenu("History");
-        historyMenu.addMenuListener(menuListener);
+        JComponent panel2 = historyScreen();
+        // check type here
+        System.out.println(panel2.getComponents()[0] instanceof JTextArea);
 
-        JMenu randMenu = new JMenu("Random");
-        JMenu gamesMenu = new JMenu("Games");
-        menuBar.add(searchMenu);
-        menuBar.add(historyMenu);
-        menuBar.add(randMenu);
-        menuBar.add(gamesMenu);
-        this.setJMenuBar(menuBar);
+        tabbedPane.addTab("History", null, panel2);
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
-        JPanel search = searchScreen();
-        JPanel history = historyScreen();
+        JComponent panel3 = gameScreen();
+        tabbedPane.addTab("Games", null, panel3);
+        tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
 
-        //Create the panel that contains the "cards".
-        cards = new JPanel(new CardLayout());
-        cards.add(search, "Search");
-        cards.add(history, "History");
+        //Add the tabbed pane to this panel.
+        dictionary.add(tabbedPane);
 
-        // Add your card container to the frame
-        Container pane = this.getContentPane();
-        pane.add(cards, BorderLayout.CENTER);
-        cardLayout = (CardLayout)(cards.getLayout());
+        //The following line enables to use scrolling tabs.
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
+        this.setLayout(new BorderLayout());
+        this.add(dictionary, BorderLayout.CENTER);
     }
 
-    public JPanel searchScreen(){
+    protected JComponent searchScreen(){
+        SearchTabListener searchListener = new SearchTabListener(this);
         // Text Container
-        JPanel searchArea = new JPanel();
-        JTextField inputField = new JTextField(20);
+        JPanel searchArea = new JPanel(false);
+        inputField = new JTextField(20);
+        inputField.setFont(normalText);
+
         JButton searchKey = new JButton("Search word");
+        searchKey.setFont(headingText);
+        searchKey.addActionListener(searchListener);
+
         JButton searchDef = new JButton("Search definition");
+        searchDef.setFont(headingText);
+
+        searchDef.addActionListener(searchListener);
+
         searchArea.setLayout(new FlowLayout());
         searchArea.add(inputField);
         searchArea.add(searchKey);
@@ -87,13 +106,19 @@ public class dictionaryView extends JFrame {
         // Result Area
         JPanel resultArea = new JPanel();
         JLabel titlesResult = new JLabel("Word - Meaning");
-        JTextArea showResult = new JTextArea();
-        showResult.setText("YUP - Yeppp| Approval\n"
-                + "SUP - What's up \n");
+        titlesResult.setFont(headingText);
+
+        WordResultArea = new JTextArea();
+        WordResultArea.setFont(normalText);
+
+        JScrollPane resultScroll = new JScrollPane(WordResultArea
+                ,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
+                ,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
 
         resultArea.setLayout(new BoxLayout(resultArea,BoxLayout.Y_AXIS));
         resultArea.add(titlesResult);
-        resultArea.add(showResult);
+        resultArea.add(resultScroll);
 
 //        String[][] data={ {"101","Amit"},
 //                {"102","Jai"},
@@ -108,49 +133,104 @@ public class dictionaryView extends JFrame {
         // Modify Area
         JPanel modifyArea = new JPanel();
         JButton addBtn = new JButton("Add");
+        addBtn.setFont(headingText);
+        addBtn.addActionListener(searchListener);
+
         JButton delBtn = new JButton("Delete");
+        delBtn.setFont(headingText);
+        delBtn.addActionListener(searchListener);
+
         JButton editBtn = new JButton("Edit");
+        editBtn.setFont(headingText);
+        editBtn.addActionListener(searchListener);
+
         JButton resetBtn = new JButton("Reset");
+        resetBtn.setFont(headingText);
+        resetBtn.addActionListener(searchListener);
+
         modifyArea.setLayout(new BoxLayout(modifyArea,BoxLayout.PAGE_AXIS));
         modifyArea.add(addBtn);
         modifyArea.add(delBtn);
         modifyArea.add(editBtn);
         modifyArea.add(resetBtn);
 
-
-        // Program
+        // Show Screen
         JPanel searchSrc = new JPanel();
-        searchSrc.setLayout(new BorderLayout(10,10));
+        searchSrc.setLayout(new BorderLayout(10,0));
         searchSrc.add(searchArea, BorderLayout.NORTH);
         searchSrc.add(resultArea,BorderLayout.CENTER);
         searchSrc.add(modifyArea,BorderLayout.EAST);
         return searchSrc;
     }
 
-    public JPanel historyScreen(){
-        JTextField history = new JTextField();
+    protected JComponent historyScreen(){
+        //JTextField history = new JTextField();
+        JTextArea showResult = new JTextArea();
+        showResult.setFont(normalText);
+
+        ArrayList<String> history = this.dictModel.getHistory();
+        int sizeHis = history.size();
+        StringBuilder listHistory = new StringBuilder();
+        for(int i = 0; i < sizeHis; i++){
+            listHistory.append(history.get(i)).append("\n");
+        }
+        showResult.setText(listHistory.toString());
+
+        JPanel hisSrc = new JPanel();
+        hisSrc.setLayout(new BorderLayout());
+        hisSrc.add(showResult,BorderLayout.CENTER);
+        return hisSrc;
+    }
+
+    protected JComponent gameScreen(){
+        JTextField games = new JTextField();
         JTextArea showResult = new JTextArea();
         showResult.setText("YUP - Yeppp| Approval\n"
                 + "SUP - What's up \n");
 
-        history.setLayout(new BoxLayout(history,BoxLayout.Y_AXIS));
-        history.add(showResult);
+        games.setLayout(new BoxLayout(games,BoxLayout.Y_AXIS));
+        games.add(showResult);
 
         JPanel hisSrc = new JPanel();
         hisSrc.setLayout(new BorderLayout());
-        hisSrc.add(history,BorderLayout.CENTER);
-        return hisSrc;
+        hisSrc.add(games,BorderLayout.CENTER);
+        return games;
     }
 
-    public void setSearchSrc(){
-        cardLayout.show(cards,"Search");
+    public String getTextInput(){
+        return inputField.getText();
     }
 
-    public void setHistorySrc(){
-        cardLayout.show(cards,"History");
+    public void searchWord(){
+        String input = inputField.getText();
+        String result = this.dictModel.searchKey(input);
+
+        if(result == null){
+            WordResultArea.setText("Not found " + input);
+        }
+        else {
+            WordResultArea.setText(input + " - " + result + "\n");
+        }
     }
 
+    // not finished
+    public void searchDef(){
+        String input = inputField.getText();
+        Map<String, String> resultMap = this.dictModel.searchDefinition(input);
+        String result = "";
+        result = resultMap.keySet().stream()
+                .map(key -> key + " -> " + resultMap.get(key))
+                .collect(Collectors.joining("\n"));
 
+        if(result.isEmpty()){
+            WordResultArea.setText("Not found " + input);
+        }
+        else {
+            WordResultArea.setText(result);
+        }
+    }
 
+    public void addAWord(){
 
+    }
 }
