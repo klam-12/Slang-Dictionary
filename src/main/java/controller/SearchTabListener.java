@@ -34,16 +34,19 @@ public class SearchTabListener implements ActionListener {
                 break;
             case "Add":
                 System.out.println("Add");
-
+                dictView.addAWord();
                 break;
             case "Delete":
                 System.out.println("Delete");
+                dictView.deleteAWord();
                 break;
             case "Edit":
                 System.out.println("Edit");
+                dictView.editAWord();
                 break;
             case "Reset":
                 System.out.println("Reset");
+                dictView.reset();
                 break;
             default:
                 System.out.println("Nothing");

@@ -231,6 +231,115 @@ public class dictionaryView extends JFrame {
     }
 
     public void addAWord(){
+        String wordName = (String) JOptionPane.showInputDialog(
+          this,
+                "Input the word",
+                "Add a Word",
+                JOptionPane.PLAIN_MESSAGE);
 
+        String wordDefinition = (String) JOptionPane.showInputDialog(
+                this,
+                "Input the definition",
+                "Add a Word",
+                JOptionPane.PLAIN_MESSAGE);
+
+        String found = this.dictModel.searchKey(wordName);
+        if(found == null){
+            // Add successfully
+            this.dictModel.addAWord(wordName,wordDefinition);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Add a new word successfully",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE );
+        }
+        else {
+            Object[] options = { "Overwrite", "Duplicate","Cancel" };
+            int choice = JOptionPane.showOptionDialog(
+                    this,
+                    "This word has already existed. Do you want to?",
+                    "Warning",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                    null,
+                    options, options[0]);
+
+           if (choice == 0) {
+               // Overwrite
+               this.dictModel.editAWord(wordName,wordDefinition);
+           } else // Cancel
+               if (choice == 1){
+               // Duplicate
+               this.dictModel.addAWord(wordName + "_copy", wordDefinition);
+           }
+           else return;
+        }
+    }
+
+    public void deleteAWord(){
+        String wordName = (String) JOptionPane.showInputDialog(
+                this,
+                "Input the word",
+                "Delete a Word",
+                JOptionPane.PLAIN_MESSAGE);
+
+        String found = this.dictModel.searchKey(wordName);
+        if(found == null){
+            // Not found
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Can't find the word",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE );
+        }
+        else {
+            int choice = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to delete this word?");
+            if(choice == JOptionPane.YES_OPTION){
+                this.dictModel.deleteAWord(wordName);
+            }
+        }
+    }
+
+    public void editAWord(){
+        String wordName = (String) JOptionPane.showInputDialog(
+                this,
+                "Input the word",
+                "Edit a Word",
+                JOptionPane.PLAIN_MESSAGE);
+
+        String found = this.dictModel.searchKey(wordName);
+        if(found == null){
+            // Not found
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Can't find the word",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE );
+        }
+        else {
+            String wordDefinition = (String) JOptionPane.showInputDialog(
+                    this,
+                    "Input the definition",
+                    "Edit a Word",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            // Edit successfully
+            this.dictModel.editAWord(wordName,wordDefinition);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Edit successfully",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE );
+        }
+    }
+
+    public void reset(){
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to reset the dictionary?");
+        if(choice == JOptionPane.YES_OPTION){
+            this.dictModel.reset();
+        }
     }
 }
