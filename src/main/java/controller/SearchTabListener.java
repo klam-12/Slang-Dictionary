@@ -18,7 +18,6 @@ public class SearchTabListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String click = e.getActionCommand();
-        String input;
         switch (click){
             case "Search word":
                 System.out.println("Search word");
@@ -47,6 +46,10 @@ public class SearchTabListener implements ActionListener {
             case "Reset":
                 System.out.println("Reset");
                 dictView.reset();
+                break;
+            case "Random":
+                System.out.println("Random");
+                dictView.randomAWord();
                 break;
             default:
                 System.out.println("Nothing");

@@ -4,6 +4,8 @@ import controller.SearchTabListener;
 import model.dictionaryModel;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -63,7 +65,8 @@ public class dictionaryView extends JFrame {
 
         JComponent panel2 = historyScreen();
         // check type here
-        System.out.println(panel2.getComponents()[0] instanceof JTextArea);
+        //System.out.println(panel2.getComponents()[0] instanceof JTextArea);
+
 
         tabbedPane.addTab("History", null, panel2);
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
@@ -71,6 +74,13 @@ public class dictionaryView extends JFrame {
         JComponent panel3 = gameScreen();
         tabbedPane.addTab("Games", null, panel3);
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
+
+        // add tabbed pane listener
+        tabbedPane.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                System.out.println("Tab: " + tabbedPane.getSelectedIndex());
+            }
+        });
 
         //Add the tabbed pane to this panel.
         dictionary.add(tabbedPane);
@@ -148,18 +158,24 @@ public class dictionaryView extends JFrame {
         resetBtn.setFont(headingText);
         resetBtn.addActionListener(searchListener);
 
+        JButton randWord = new JButton("Random");
+        randWord.setFont(headingText);
+        randWord.addActionListener(searchListener);
+
         modifyArea.setLayout(new BoxLayout(modifyArea,BoxLayout.PAGE_AXIS));
         modifyArea.add(addBtn);
         modifyArea.add(delBtn);
         modifyArea.add(editBtn);
         modifyArea.add(resetBtn);
+        modifyArea.add(randWord);
 
         // Show Screen
         JPanel searchSrc = new JPanel();
-        searchSrc.setLayout(new BorderLayout(10,0));
+        searchSrc.setLayout(new BorderLayout(10,10));
         searchSrc.add(searchArea, BorderLayout.NORTH);
         searchSrc.add(resultArea,BorderLayout.CENTER);
         searchSrc.add(modifyArea,BorderLayout.EAST);
+
         return searchSrc;
     }
 
@@ -183,18 +199,8 @@ public class dictionaryView extends JFrame {
     }
 
     protected JComponent gameScreen(){
-        JTextField games = new JTextField();
-        JTextArea showResult = new JTextArea();
-        showResult.setText("YUP - Yeppp| Approval\n"
-                + "SUP - What's up \n");
 
-        games.setLayout(new BoxLayout(games,BoxLayout.Y_AXIS));
-        games.add(showResult);
-
-        JPanel hisSrc = new JPanel();
-        hisSrc.setLayout(new BorderLayout());
-        hisSrc.add(games,BorderLayout.CENTER);
-        return games;
+        return gameWordName();
     }
 
     public String getTextInput(){
@@ -211,6 +217,7 @@ public class dictionaryView extends JFrame {
         else {
             WordResultArea.setText(input + " - " + result + "\n");
         }
+
     }
 
     // not finished
@@ -228,6 +235,7 @@ public class dictionaryView extends JFrame {
         else {
             WordResultArea.setText(result);
         }
+
     }
 
     public void addAWord(){
@@ -341,5 +349,54 @@ public class dictionaryView extends JFrame {
         if(choice == JOptionPane.YES_OPTION){
             this.dictModel.reset();
         }
+    }
+
+    public void randomAWord(){
+        ArrayList<String> wordName = this.dictModel.randomAWord();
+        JOptionPane.showMessageDialog(
+                this,
+                "A WORD FOR TODAY \n" + wordName.get(0) + " - " + wordName.get(1),
+                "Random",
+                JOptionPane.INFORMATION_MESSAGE );
+
+    }
+
+    public JPanel gameWordName(){
+        ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption3 = this.dictModel.randomAWord();
+
+        JLabel title = new JLabel("GAME MODE: Find definition");
+        title.setFont(headingText);
+        JLabel word = new JLabel(wordNameForAnswer.get(0));
+
+        JPanel options = new JPanel();
+        options.setLayout(new BoxLayout(options,BoxLayout.PAGE_AXIS));
+
+        JRadioButton opt1=new JRadioButton(wordNameForAnswer.get(1));
+        JRadioButton opt2=new JRadioButton(wordNameForOption1.get(1));
+        JRadioButton opt3=new JRadioButton(wordNameForOption2.get(1));
+        JRadioButton opt4=new JRadioButton(wordNameForOption3.get(1));
+
+        opt1.setBounds(75,50,100,30);
+        opt2.setBounds(75,100,100,30);
+        opt3.setBounds(75,100,100,30);
+        opt4.setBounds(75,100,100,30);
+
+        ButtonGroup bg=new ButtonGroup();
+        bg.add(opt1);bg.add(opt2); bg.add(opt3); bg.add(opt4);
+        options.add(opt1); options.add(opt2); options.add(opt3); options.add(opt4);
+
+        JButton submitBtn = new JButton("Submit");
+
+        JPanel games = new JPanel();
+        games.setLayout(new BoxLayout(games,BoxLayout.PAGE_AXIS));
+        games.add(title);
+        games.add(word);
+        games.add(options);
+        games.add(submitBtn);
+
+        return games;
     }
 }

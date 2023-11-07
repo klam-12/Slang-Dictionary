@@ -14,11 +14,13 @@ public class dictionaryModel {
     private Map<String,String> originalDict;
     private Map<String,String> currentDict;
     private ArrayList<String> history;
+    private Random randomEngine;
 
     public dictionaryModel() {
         this.originalDict = new TreeMap<String, String>();
         this.currentDict = new TreeMap<String, String>();
         this.history = new ArrayList<String>();
+        this.randomEngine = new Random();
     }
 
     public Map<String, String> getOriginalDict() {
@@ -38,7 +40,7 @@ public class dictionaryModel {
     }
 
     public ArrayList<String> getHistory() {
-        return history;
+        return this.history;
     }
 
     public void setHistory(ArrayList<String> history) {
@@ -94,6 +96,7 @@ public class dictionaryModel {
         if(this.currentDict.get(key) != null){
             value = this.currentDict.get(key);
         }
+        this.addToHistory(key);
         return value;
     }
 
@@ -102,7 +105,7 @@ public class dictionaryModel {
                 .filter(x -> x.getValue().contains(value))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        System.out.println(subMap);
+        this.addToHistory(value);
         return subMap;
     }
 
@@ -122,6 +125,16 @@ public class dictionaryModel {
         this.currentDict.clear();
         this.currentDict.putAll(this.originalDict);
         // CLear history??
+    }
+
+    public ArrayList<String> randomAWord(){
+        List<String> keys = new ArrayList<String>(this.currentDict.keySet());
+        ArrayList<String> result = new ArrayList<String>();
+        String randomKey = keys.get( randomEngine.nextInt(keys.size()) );
+
+        result.add(randomKey);
+        result.add(this.currentDict.get(randomKey));
+        return result;
     }
 
     public void addToHistory(String word){
