@@ -26,12 +26,24 @@ public class dictionaryView extends JFrame {
 
     private JTextField inputField;
     private JTextArea WordResultArea;
+
+    // Game variables
     private JComboBox<String> comboBoxGame;
+    private String gameMode;
     private JPanel gameContext;
     private JPanel preScreenGame;
+    private ButtonGroup buttonGroupWord;
+    private ButtonGroup buttonGroupDef;
+
+    private String gameChoiceOfUser;
+    private String gameAnswer;
+
 
     public dictionaryView() {
         this.dictModel = new dictionaryModel();
+        gameChoiceOfUser = "";
+        gameAnswer = "";
+        gameMode = "Find definition";
 
         // Load database
         dictModel.readFileSlang();
@@ -41,8 +53,52 @@ public class dictionaryView extends JFrame {
         this.setVisible(true);
     }
 
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(String gameMode) {
+        this.gameMode = gameMode;
+    }
+
     public JComboBox<String> getComboBoxGame() {
         return comboBoxGame;
+    }
+
+    public void setComboBoxGame(JComboBox<String> comboBoxGame) {
+        this.comboBoxGame = comboBoxGame;
+    }
+
+    public ButtonGroup getButtonGroupWord() {
+        return buttonGroupWord;
+    }
+
+    public void setButtonGroupWord(ButtonGroup buttonGroupWord) {
+        this.buttonGroupWord = buttonGroupWord;
+    }
+
+    public ButtonGroup getButtonGroupDef() {
+        return buttonGroupDef;
+    }
+
+    public void setButtonGroupDef(ButtonGroup buttonGroupDef) {
+        this.buttonGroupDef = buttonGroupDef;
+    }
+
+    public String getGameChoiceOfUser() {
+        return gameChoiceOfUser;
+    }
+
+    public void setGameChoiceOfUser(String gameChoiceOfUser) {
+        this.gameChoiceOfUser = gameChoiceOfUser;
+    }
+
+    public String getGameAnswer() {
+        return gameAnswer;
+    }
+
+    public void setGameAnswer(String gameAnswer) {
+        this.gameAnswer = gameAnswer;
     }
 
     public void init(){
@@ -228,7 +284,7 @@ public class dictionaryView extends JFrame {
         header.add(comboBoxGame);
 
         // ****** Body - Context
-          gameContext = createGameMode("Find definition");
+          gameContext = createGameMode(gameModes[0]);
 //        JPanel mode = gameWordName();
 //        JPanel mode = gameDefiName();
 
@@ -238,10 +294,11 @@ public class dictionaryView extends JFrame {
 
         JButton submitBtn = new JButton("Submit");
         submitBtn.setFont(normalText);
+        submitBtn.addActionListener(gameListener);
 
         JPanel footer = new JPanel();
         footer.setLayout(new GridLayout(2,1));
-        footer.add(result);
+        //footer.add(result);
         footer.add(submitBtn);
 
 
@@ -260,7 +317,7 @@ public class dictionaryView extends JFrame {
         preScreenGame.remove(gameContext);
         gameContext = createGameMode(mode);
         preScreenGame.add(gameContext,BorderLayout.CENTER);
-
+        this.setGameMode(mode);
     }
 
     public String getTextInput(){
@@ -421,12 +478,15 @@ public class dictionaryView extends JFrame {
 
     }
 
-    public JPanel gameWordName(){
+    protected JPanel gameFinDefinition(){
         Random randEngine = new Random();
         ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption3 = this.dictModel.randomAWord();
+
+        // set the answer
+        this.setGameAnswer(wordNameForAnswer.get(1));
 
         ArrayList<String> listOfOptions = new ArrayList<String>();
         listOfOptions.add(wordNameForAnswer.get(1));
@@ -452,8 +512,9 @@ public class dictionaryView extends JFrame {
         JRadioButton opt3=new JRadioButton(listOfOptions.get(2));
         JRadioButton opt4=new JRadioButton(listOfOptions.get(3));
 
-        ButtonGroup bg=new ButtonGroup();
-        bg.add(opt1);bg.add(opt2); bg.add(opt3); bg.add(opt4);
+        buttonGroupWord=new ButtonGroup();
+        buttonGroupWord.add(opt1);buttonGroupWord.add(opt2); 
+        buttonGroupWord.add(opt3); buttonGroupWord.add(opt4);
         options.add(opt1); options.add(opt2); options.add(opt3); options.add(opt4);
 
         JPanel games = new JPanel();
@@ -464,12 +525,15 @@ public class dictionaryView extends JFrame {
         return games;
     }
 
-    public JPanel gameDefiName(){
+    protected JPanel gameFindWord(){
         Random randEngine = new Random();
         ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption3 = this.dictModel.randomAWord();
+
+        // set the answer
+        this.setGameAnswer(wordNameForAnswer.get(0));
 
         ArrayList<String> listOfOptions = new ArrayList<String>();
         listOfOptions.add(wordNameForAnswer.get(0));
@@ -495,8 +559,9 @@ public class dictionaryView extends JFrame {
         JRadioButton opt3=new JRadioButton(listOfOptions.get(2));
         JRadioButton opt4=new JRadioButton(listOfOptions.get(3));
 
-        ButtonGroup bg=new ButtonGroup();
-        bg.add(opt1);bg.add(opt2); bg.add(opt3); bg.add(opt4);
+        buttonGroupDef=new ButtonGroup();
+        buttonGroupDef.add(opt1);buttonGroupDef.add(opt2);
+        buttonGroupDef.add(opt3); buttonGroupDef.add(opt4);
         options.add(opt1); options.add(opt2); options.add(opt3); options.add(opt4);
 
         JPanel games = new JPanel();
@@ -511,9 +576,30 @@ public class dictionaryView extends JFrame {
     protected JPanel createGameMode(String mode){
         JPanel gamePanel;
         if(mode.equals("Find definition"))
-            gamePanel = this.gameWordName();
+            gamePanel = this.gameFinDefinition();
         else
-            gamePanel = this.gameDefiName();
+            gamePanel = this.gameFindWord();
         return gamePanel;
     }
+
+    public void checkGame(String mode){
+
+        if (this.getGameChoiceOfUser().equals(this.getGameAnswer())){
+            JOptionPane.showMessageDialog(
+                    this,
+                    "You're correct. Let's move to the next question",
+                    "Game",
+                    JOptionPane.INFORMATION_MESSAGE );
+            this.setGameScreen(mode);
+        }
+        else{
+            JOptionPane.showMessageDialog(
+                    this,
+                    "You're wrong. Let's try again",
+                    "Game",
+                    JOptionPane.ERROR_MESSAGE );
+        }
+    }
+    
+    
 }
