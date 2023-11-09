@@ -48,10 +48,13 @@ public class dictionaryModel {
     }
 
     public void readFileSlang(){
-        String filename = "slang.txt";
+        // Running from second times or above
+        String filename = "database.txt";
         String line = "";
         String splitBy = "`";
         try {
+            System.out.println("Read file database");
+
             //parsing a CSV file into BufferedReader class constructor
             BufferedReader br = new BufferedReader(new FileReader(filename));
             line = br.readLine(); // omit first line
@@ -74,21 +77,66 @@ public class dictionaryModel {
                 this.currentDict.put(key,value);
             }
             br.close();
-            System.out.println("Import file successfully.");
+            //System.out.println("Import file successfully.");
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
-        /*
-        System.out.println("\nTraversing the TreeMap:");
-        for (Map.Entry<String, String> e :
-                originalDict.entrySet())
-            System.out.println(e.getKey() + " "
-                    + e.getValue());
+        // Running first time
+        if(this.currentDict.isEmpty()){
+            filename = "slang.txt";
+            System.out.println("Read file slang");
+            try {
+                //parsing a CSV file into BufferedReader class constructor
+                BufferedReader br = new BufferedReader(new FileReader(filename));
+                line = br.readLine(); // omit first line
 
-         */
+                String key = "";
+                String value = "";
+                while ((line = br.readLine()) != null){
+                    if(line.contains(splitBy)){
+                        String[] word = line.split(splitBy);
+                        key = word[0].trim();
+                        value = word[1];
+                    }
+                    else{
+                        value = value + "| " + line;
+                        this.originalDict.replace(key, value);
+                        this.currentDict.replace(key, value);
+                        continue;
+                    }
+                    this.originalDict.put(key,value);
+                    this.currentDict.put(key,value);
+                }
+                br.close();
+                //System.out.println("Import file successfully.");
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
 
+    }
+
+    public void exportDatabase(){
+        String filename = "database.txt";
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+            bw.write("Slag`Meaning");
+            bw.newLine();
+            if(!this.currentDict.isEmpty()){
+                for (Map.Entry<String, String> entry : this.currentDict.entrySet()) {
+                    bw.write(entry.getKey() + "`" + entry.getValue() +"\n");
+                    bw.flush();   // Flush the buffer and write all changes to the disk
+                }
+            }
+
+            bw.close();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     public String searchKey(String key){
@@ -152,7 +200,7 @@ public class dictionaryModel {
                 bw.write(this.history.get(i));
                 bw.newLine();
             }
-
+            bw.flush();
             bw.close();
         }
         catch(Exception ex){

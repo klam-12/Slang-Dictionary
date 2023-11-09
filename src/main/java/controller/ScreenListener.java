@@ -25,6 +25,7 @@ public class ScreenListener implements ChangeListener, WindowListener {
     @Override
     public void windowClosing(WindowEvent e) {
         this.dictView.saveHistory();
+        this.dictView.saveDatabase();
     }
 
     @Override

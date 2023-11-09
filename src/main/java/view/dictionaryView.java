@@ -50,7 +50,11 @@ public class dictionaryView extends JFrame {
         gameMode = "Find definition";
 
         // Load database
+        long start,end;
+        start = System.currentTimeMillis();
         dictModel.readFileSlang();
+        end = System.currentTimeMillis();
+        System.out.println("Time Millis: " + (end - start));
         dictModel.readHistory();
 
         this.init();
@@ -603,5 +607,9 @@ public class dictionaryView extends JFrame {
 
     public void saveHistory(){
         this.dictModel.exportHistory();
+    }
+
+    public void saveDatabase(){
+        this.dictModel.exportDatabase();
     }
 }
