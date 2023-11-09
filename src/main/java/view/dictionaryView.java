@@ -1,6 +1,7 @@
 package view;
 
 import controller.GamesListener;
+import controller.ScreenListener;
 import controller.SearchTabListener;
 import model.dictionaryModel;
 
@@ -37,6 +38,9 @@ public class dictionaryView extends JFrame {
 
     private String gameChoiceOfUser;
     private String gameAnswer;
+
+    // History
+    private JTextArea historyTextArea;
 
 
     public dictionaryView() {
@@ -101,25 +105,22 @@ public class dictionaryView extends JFrame {
         this.gameAnswer = gameAnswer;
     }
 
-    public void init(){
+    public JTextArea getHistoryTextArea() {
+        return historyTextArea;
+    }
+
+    public void setHistoryTextArea(JTextArea historyTextArea) {
+        this.historyTextArea = historyTextArea;
+    }
+
+    private void init(){
+        ScreenListener screenListener = new ScreenListener(this);
         this.setTitle("Slang Dictionary");
         this.setSize(700,600);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-//        // Menu Container
-//        JPanel menu = new JPanel();
-//        JButton searchBtn = new JButton("Search");
-//        JButton historyBtn = new JButton("History");
-//        JButton randomBtn = new JButton("Random");
-//        JButton gamesBtn = new JButton("Games");
-//
-//        menu.setLayout(new FlowLayout());
-//        menu.setBackground(Color.PINK);
-//        menu.add(searchBtn);
-//        menu.add(historyBtn);
-//        menu.add(randomBtn);
-//        menu.add(gamesBtn);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.addWindowListener(screenListener);
+        //this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel dictionary = new JPanel(new GridLayout(1, 1));
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -130,10 +131,6 @@ public class dictionaryView extends JFrame {
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 
         JComponent panel2 = historyScreen();
-        // check type here
-        //System.out.println(panel2.getComponents()[0] instanceof JTextArea);
-
-
         tabbedPane.addTab("History", null, panel2);
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
@@ -142,12 +139,8 @@ public class dictionaryView extends JFrame {
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
 
         // add tabbed pane listener
-        tabbedPane.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                System.out.println("Tab: " + tabbedPane.getSelectedIndex());
-            }
-        });
-
+        tabbedPane.addChangeListener(screenListener);
+        
         //Add the tabbed pane to this panel.
         dictionary.add(tabbedPane);
 
@@ -246,9 +239,8 @@ public class dictionaryView extends JFrame {
     }
 
     protected JComponent historyScreen(){
-        //JTextField history = new JTextField();
-        JTextArea showResult = new JTextArea();
-        showResult.setFont(normalText);
+        historyTextArea = new JTextArea();
+        historyTextArea.setFont(normalText);
 
         ArrayList<String> history = this.dictModel.getHistory();
         int sizeHis = history.size();
@@ -256,11 +248,11 @@ public class dictionaryView extends JFrame {
         for(int i = 0; i < sizeHis; i++){
             listHistory.append(history.get(i)).append("\n");
         }
-        showResult.setText(listHistory.toString());
+        historyTextArea.setText(listHistory.toString());
 
         JPanel hisSrc = new JPanel();
         hisSrc.setLayout(new BorderLayout());
-        hisSrc.add(showResult,BorderLayout.CENTER);
+        hisSrc.add(historyTextArea,BorderLayout.CENTER);
         return hisSrc;
     }
 
@@ -313,11 +305,107 @@ public class dictionaryView extends JFrame {
         return screen;
     }
 
-    public void setGameScreen(String mode){
-        preScreenGame.remove(gameContext);
-        gameContext = createGameMode(mode);
-        preScreenGame.add(gameContext,BorderLayout.CENTER);
-        this.setGameMode(mode);
+    protected JPanel gameFinDefinition(){
+        Random randEngine = new Random();
+        ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption3 = this.dictModel.randomAWord();
+
+        // set the answer
+        this.setGameAnswer(wordNameForAnswer.get(1));
+
+        ArrayList<String> listOfOptions = new ArrayList<String>();
+        listOfOptions.add(wordNameForAnswer.get(1));
+        listOfOptions.add(wordNameForOption1.get(1));
+        listOfOptions.add(wordNameForOption2.get(1));
+        listOfOptions.add(wordNameForOption3.get(1));
+        Collections.shuffle(listOfOptions);
+
+        // Get the word
+        JLabel word = new JLabel(wordNameForAnswer.get(0));
+        word.setFont(headingText);
+        JPanel wordSpace = new JPanel();
+        wordSpace.setLayout(new FlowLayout());
+        wordSpace.add(word);
+
+
+        JPanel options = new JPanel();
+        options.setLayout(new BoxLayout(options,BoxLayout.Y_AXIS));
+        options.setFont(normalText);
+
+        JRadioButton opt1=new JRadioButton(listOfOptions.get(0));
+        JRadioButton opt2=new JRadioButton(listOfOptions.get(1));
+        JRadioButton opt3=new JRadioButton(listOfOptions.get(2));
+        JRadioButton opt4=new JRadioButton(listOfOptions.get(3));
+
+        buttonGroupWord=new ButtonGroup();
+        buttonGroupWord.add(opt1);buttonGroupWord.add(opt2);
+        buttonGroupWord.add(opt3); buttonGroupWord.add(opt4);
+        options.add(opt1); options.add(opt2); options.add(opt3); options.add(opt4);
+
+        JPanel games = new JPanel();
+        games.setLayout(new BorderLayout());
+        games.add(wordSpace,BorderLayout.NORTH);
+        games.add(options, BorderLayout.CENTER);
+
+        return games;
+    }
+
+    protected JPanel gameFindWord(){
+        Random randEngine = new Random();
+        ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
+        ArrayList<String> wordNameForOption3 = this.dictModel.randomAWord();
+
+        // set the answer
+        this.setGameAnswer(wordNameForAnswer.get(0));
+
+        ArrayList<String> listOfOptions = new ArrayList<String>();
+        listOfOptions.add(wordNameForAnswer.get(0));
+        listOfOptions.add(wordNameForOption1.get(0));
+        listOfOptions.add(wordNameForOption2.get(0));
+        listOfOptions.add(wordNameForOption3.get(0));
+        Collections.shuffle(listOfOptions);
+
+        // Get the definition
+        JLabel word = new JLabel(wordNameForAnswer.get(1));
+        word.setFont(headingText);
+        JPanel wordSpace = new JPanel();
+        wordSpace.setLayout(new FlowLayout());
+        wordSpace.add(word);
+
+
+        JPanel options = new JPanel();
+        options.setLayout(new BoxLayout(options,BoxLayout.Y_AXIS));
+        options.setFont(normalText);
+
+        JRadioButton opt1=new JRadioButton(listOfOptions.get(0));
+        JRadioButton opt2=new JRadioButton(listOfOptions.get(1));
+        JRadioButton opt3=new JRadioButton(listOfOptions.get(2));
+        JRadioButton opt4=new JRadioButton(listOfOptions.get(3));
+
+        buttonGroupDef=new ButtonGroup();
+        buttonGroupDef.add(opt1);buttonGroupDef.add(opt2);
+        buttonGroupDef.add(opt3); buttonGroupDef.add(opt4);
+        options.add(opt1); options.add(opt2); options.add(opt3); options.add(opt4);
+
+        JPanel games = new JPanel();
+        games.setLayout(new BorderLayout());
+        games.add(wordSpace,BorderLayout.NORTH);
+        games.add(options, BorderLayout.CENTER);
+
+        return games;
+    }
+
+    protected JPanel createGameMode(String mode){
+        JPanel gamePanel;
+        if(mode.equals("Find definition"))
+            gamePanel = this.gameFinDefinition();
+        else
+            gamePanel = this.gameFindWord();
+        return gamePanel;
     }
 
     public String getTextInput(){
@@ -478,112 +566,14 @@ public class dictionaryView extends JFrame {
 
     }
 
-    protected JPanel gameFinDefinition(){
-        Random randEngine = new Random();
-        ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
-        ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
-        ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
-        ArrayList<String> wordNameForOption3 = this.dictModel.randomAWord();
-
-        // set the answer
-        this.setGameAnswer(wordNameForAnswer.get(1));
-
-        ArrayList<String> listOfOptions = new ArrayList<String>();
-        listOfOptions.add(wordNameForAnswer.get(1));
-        listOfOptions.add(wordNameForOption1.get(1));
-        listOfOptions.add(wordNameForOption2.get(1));
-        listOfOptions.add(wordNameForOption3.get(1));
-        Collections.shuffle(listOfOptions);
-
-        // Get the word
-        JLabel word = new JLabel(wordNameForAnswer.get(0));
-        word.setFont(headingText);
-        JPanel wordSpace = new JPanel();
-        wordSpace.setLayout(new FlowLayout());
-        wordSpace.add(word);
-
-
-        JPanel options = new JPanel();
-        options.setLayout(new BoxLayout(options,BoxLayout.Y_AXIS));
-        options.setFont(normalText);
-
-        JRadioButton opt1=new JRadioButton(listOfOptions.get(0));
-        JRadioButton opt2=new JRadioButton(listOfOptions.get(1));
-        JRadioButton opt3=new JRadioButton(listOfOptions.get(2));
-        JRadioButton opt4=new JRadioButton(listOfOptions.get(3));
-
-        buttonGroupWord=new ButtonGroup();
-        buttonGroupWord.add(opt1);buttonGroupWord.add(opt2); 
-        buttonGroupWord.add(opt3); buttonGroupWord.add(opt4);
-        options.add(opt1); options.add(opt2); options.add(opt3); options.add(opt4);
-
-        JPanel games = new JPanel();
-        games.setLayout(new BorderLayout());
-        games.add(wordSpace,BorderLayout.NORTH);
-        games.add(options, BorderLayout.CENTER);
-
-        return games;
-    }
-
-    protected JPanel gameFindWord(){
-        Random randEngine = new Random();
-        ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
-        ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
-        ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
-        ArrayList<String> wordNameForOption3 = this.dictModel.randomAWord();
-
-        // set the answer
-        this.setGameAnswer(wordNameForAnswer.get(0));
-
-        ArrayList<String> listOfOptions = new ArrayList<String>();
-        listOfOptions.add(wordNameForAnswer.get(0));
-        listOfOptions.add(wordNameForOption1.get(0));
-        listOfOptions.add(wordNameForOption2.get(0));
-        listOfOptions.add(wordNameForOption3.get(0));
-        Collections.shuffle(listOfOptions);
-
-        // Get the definition
-        JLabel word = new JLabel(wordNameForAnswer.get(1));
-        word.setFont(headingText);
-        JPanel wordSpace = new JPanel();
-        wordSpace.setLayout(new FlowLayout());
-        wordSpace.add(word);
-
-
-        JPanel options = new JPanel();
-        options.setLayout(new BoxLayout(options,BoxLayout.Y_AXIS));
-        options.setFont(normalText);
-
-        JRadioButton opt1=new JRadioButton(listOfOptions.get(0));
-        JRadioButton opt2=new JRadioButton(listOfOptions.get(1));
-        JRadioButton opt3=new JRadioButton(listOfOptions.get(2));
-        JRadioButton opt4=new JRadioButton(listOfOptions.get(3));
-
-        buttonGroupDef=new ButtonGroup();
-        buttonGroupDef.add(opt1);buttonGroupDef.add(opt2);
-        buttonGroupDef.add(opt3); buttonGroupDef.add(opt4);
-        options.add(opt1); options.add(opt2); options.add(opt3); options.add(opt4);
-
-        JPanel games = new JPanel();
-        games.setLayout(new BorderLayout());
-        games.add(wordSpace,BorderLayout.NORTH);
-        games.add(options, BorderLayout.CENTER);
-
-        return games;
-    }
-
-    //"Find definition", "Find word"
-    protected JPanel createGameMode(String mode){
-        JPanel gamePanel;
-        if(mode.equals("Find definition"))
-            gamePanel = this.gameFinDefinition();
-        else
-            gamePanel = this.gameFindWord();
-        return gamePanel;
+    public void setGameScreen(String mode){
+        preScreenGame.remove(gameContext);
+        gameContext = createGameMode(mode);
+        preScreenGame.add(gameContext,BorderLayout.CENTER);
+        this.setGameMode(mode);
     }
 
     public void checkGame(String mode){
-
         if (this.getGameChoiceOfUser().equals(this.getGameAnswer())){
             JOptionPane.showMessageDialog(
                     this,
@@ -600,6 +590,18 @@ public class dictionaryView extends JFrame {
                     JOptionPane.ERROR_MESSAGE );
         }
     }
-    
-    
+
+    public void reloadHistoryTextArea(){
+        ArrayList<String> history = this.dictModel.getHistory();
+        int sizeHis = history.size();
+        StringBuilder listHistory = new StringBuilder();
+        for(int i = 0; i < sizeHis; i++){
+            listHistory.append(history.get(i)).append("\n");
+        }
+        historyTextArea.setText(listHistory.toString());
+    }
+
+    public void saveHistory(){
+        this.dictModel.exportHistory();
+    }
 }
