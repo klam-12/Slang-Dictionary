@@ -119,6 +119,9 @@ public class dictionaryModel {
 
     }
 
+    /*
+    Export database to new file for next run
+     */
     public void exportDatabase(){
         String filename = "database.txt";
         try {
