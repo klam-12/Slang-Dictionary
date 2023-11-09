@@ -418,10 +418,10 @@ public class dictionaryView extends JFrame {
 
     public void searchWord(){
         String input = inputField.getText();
-        String result = this.dictModel.searchKey(input);
+        String result = this.dictModel.searchKey(input.trim());
 
         if(result == null){
-            WordResultArea.setText("Not found " + input);
+            WordResultArea.setText("Not found word: " + input);
         }
         else {
             WordResultArea.setText(input + " - " + result + "\n");
@@ -439,7 +439,7 @@ public class dictionaryView extends JFrame {
                 .collect(Collectors.joining("\n"));
 
         if(result.isEmpty()){
-            WordResultArea.setText("Not found " + input);
+            WordResultArea.setText("Not found definition: " + input);
         }
         else {
             WordResultArea.setText(result);
@@ -597,6 +597,11 @@ public class dictionaryView extends JFrame {
 
     public void reloadHistoryTextArea(){
         ArrayList<String> history = this.dictModel.getHistory();
+        if(history.isEmpty()){
+            historyTextArea.setText("No history");
+            return;
+        }
+
         int sizeHis = history.size();
         StringBuilder listHistory = new StringBuilder();
         for(int i = 0; i < sizeHis; i++){
