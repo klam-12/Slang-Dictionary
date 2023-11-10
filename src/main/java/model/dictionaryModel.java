@@ -37,14 +37,12 @@ public class dictionaryModel {
         this.history = history;
     }
 
-    public void readFileSlang(){
+    public void loadDatabase(){
         // Running from second times or above
         String filename = "database.txt";
         String line = "";
         String splitBy = "`";
         try {
-            System.out.println("Read file database");
-
             //parsing a CSV file into BufferedReader class constructor
             BufferedReader br = new BufferedReader(new FileReader(filename));
             line = br.readLine(); // omit first line
@@ -65,7 +63,6 @@ public class dictionaryModel {
                 this.currentDict.put(key,value);
             }
             br.close();
-            //System.out.println("Import file successfully.");
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -74,7 +71,6 @@ public class dictionaryModel {
         // Running first time
         if(this.currentDict.isEmpty()){
             filename = "slang.txt";
-            System.out.println("Read file slang");
             try {
                 //parsing a CSV file into BufferedReader class constructor
                 BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -96,7 +92,6 @@ public class dictionaryModel {
                     this.currentDict.put(key,value);
                 }
                 br.close();
-                //System.out.println("Import file successfully.");
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -129,7 +124,7 @@ public class dictionaryModel {
     }
 
     public String searchKey(String key){
-        if(key.isEmpty())
+        if(key == null || key.isEmpty())
             return null;
 
         String value = null;
@@ -142,7 +137,7 @@ public class dictionaryModel {
     }
 
     public Map<String, String> searchDefinition(String value){
-        if(value.isEmpty())
+        if(value == null || value.isEmpty())
             return null;
         Map<String, String> subMap = this.currentDict.entrySet().stream()
                 .filter(x -> x.getValue().contains(value))
@@ -153,19 +148,19 @@ public class dictionaryModel {
     }
 
     public void addAWord(String key, String val){
-        if(key.isEmpty())
+        if(key == null || key.isEmpty())
             return;
         this.currentDict.put(key.toUpperCase(),val);
     }
 
     public void editAWord(String key, String newVal){
-        if(key.isEmpty())
+        if(key == null || key.isEmpty())
             return;
         this.currentDict.replace(key,newVal);
     }
 
     public void deleteAWord(String key){
-        if(key.isEmpty())
+        if(key == null || key.isEmpty())
             return;
         this.currentDict.remove(key);
     }
@@ -177,7 +172,6 @@ public class dictionaryModel {
         String splitBy = "`";
 
         String filename = "slang.txt";
-        System.out.println("Read file slang");
         try {
             //parsing a CSV file into BufferedReader class constructor
             BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -217,7 +211,7 @@ public class dictionaryModel {
     }
 
     public void addToHistory(String word){
-        if(word.isEmpty())
+        if(word == null || word.isEmpty())
             return;
         this.history.add(word);
     }
@@ -260,7 +254,4 @@ public class dictionaryModel {
             System.out.println(e.getMessage());
         }
     }
-
-
-
 }

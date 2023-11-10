@@ -57,7 +57,6 @@ public class ScreenListener implements ChangeListener, WindowListener {
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() instanceof JTabbedPane pane) {
-            System.out.println("Selected paneNo : " + pane.getSelectedIndex());
             int index = pane.getSelectedIndex();
             // History tab
             if(index == 1) {

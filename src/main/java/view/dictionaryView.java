@@ -50,11 +50,11 @@ public class dictionaryView extends JFrame {
         gameMode = "Find definition";
 
         // Load database
-        long start,end;
-        start = System.currentTimeMillis();
-        dictModel.readFileSlang();
-        end = System.currentTimeMillis();
-        System.out.println("Time Millis: " + (end - start));
+        //long start,end;
+        //start = System.currentTimeMillis();
+        dictModel.loadDatabase();
+        //end = System.currentTimeMillis();
+        //System.out.println("Time Millis: " + (end - start));
         dictModel.readHistory();
 
         this.init();
@@ -193,16 +193,6 @@ public class dictionaryView extends JFrame {
         resultArea.add(titlesResult);
         resultArea.add(resultScroll);
 
-//        String[][] data={ {"101","Amit"},
-//                {"102","Jai"},
-//                {"101","Sachin"}};
-//        String[] titles = {"Name", "Meaning"};
-//        JTable showResult = new JTable(data,titles);
-//        JScrollPane scrollPane = new JScrollPane(showResult);
-//        //showResult.add(scrollPane);
-//        showResult.setFillsViewportHeight(true);
-
-
         // Modify Area
         JPanel modifyArea = new JPanel();
         JButton addBtn = new JButton("Add");
@@ -225,7 +215,7 @@ public class dictionaryView extends JFrame {
         randWord.setFont(headingText);
         randWord.addActionListener(searchListener);
 
-        modifyArea.setLayout(new BoxLayout(modifyArea,BoxLayout.PAGE_AXIS));
+        modifyArea.setLayout(new GridLayout(10,1,10,10));
         modifyArea.add(addBtn);
         modifyArea.add(delBtn);
         modifyArea.add(editBtn);
@@ -254,9 +244,12 @@ public class dictionaryView extends JFrame {
         }
         historyTextArea.setText(listHistory.toString());
 
+        JScrollPane historyScroll = new JScrollPane(historyTextArea
+                ,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
+                ,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JPanel hisSrc = new JPanel();
         hisSrc.setLayout(new BorderLayout());
-        hisSrc.add(historyTextArea,BorderLayout.CENTER);
+        hisSrc.add(historyScroll,BorderLayout.CENTER);
         return hisSrc;
     }
 
@@ -281,8 +274,6 @@ public class dictionaryView extends JFrame {
 
         // ****** Body - Context
           gameContext = createGameMode(gameModes[0]);
-//        JPanel mode = gameWordName();
-//        JPanel mode = gameDefiName();
 
         // ****** Footer
         JLabel result = new JLabel("Wrong answer. Please try again");
@@ -459,6 +450,9 @@ public class dictionaryView extends JFrame {
                 "Input the definition",
                 "Add a Word",
                 JOptionPane.PLAIN_MESSAGE);
+        if(wordName == null){
+            return;
+        }
 
         String found = this.dictModel.searchKey(wordName);
         if(found == null){
@@ -499,6 +493,10 @@ public class dictionaryView extends JFrame {
                 "Delete a Word",
                 JOptionPane.PLAIN_MESSAGE);
 
+        if(wordName == null){
+            return;
+        }
+
         String found = this.dictModel.searchKey(wordName);
         if(found == null){
             // Not found
@@ -525,6 +523,9 @@ public class dictionaryView extends JFrame {
                 "Edit a Word",
                 JOptionPane.PLAIN_MESSAGE);
 
+        if(wordName == null){
+            return;
+        }
         String found = this.dictModel.searchKey(wordName);
         if(found == null){
             // Not found

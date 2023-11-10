@@ -39,7 +39,6 @@ public class GamesListener implements ActionListener {
                         AbstractButton nextBtn = buttonsWord.nextElement();
                         if(nextBtn.isSelected()){
                             userSelected = nextBtn.getText();
-                            System.out.println(userSelected);
                             this.dictView.setGameChoiceOfUser(userSelected);
                             break;
                         }
@@ -51,7 +50,6 @@ public class GamesListener implements ActionListener {
                         AbstractButton nextBtn = buttonsDef.nextElement();
                         if(nextBtn.isSelected()){
                             userSelected = nextBtn.getText();
-                            System.out.println(userSelected);
                             this.dictView.setGameChoiceOfUser(userSelected);
                             break;
                         }
