@@ -9,6 +9,5 @@ public class Test {
     // Run program here
     public static void main(String[] args) {
         dictionaryView dictView = new dictionaryView();
-
     }
 }

@@ -136,11 +136,25 @@ public class dictionaryModel {
         return value;
     }
 
+    public boolean containsIgnoreCase(String str, String searchStr)     {
+        if(str == null || searchStr == null) return false;
+
+        final int length = searchStr.length();
+        if (length == 0)
+            return true;
+
+        for (int i = str.length() - length; i >= 0; i--) {
+            if (str.regionMatches(true, i, searchStr, 0, length))
+                return true;
+        }
+        return false;
+    }
+
     public Map<String, String> searchDefinition(String value){
         if(value == null || value.isEmpty())
             return null;
         Map<String, String> subMap = this.currentDict.entrySet().stream()
-                .filter(x -> x.getValue().contains(value))
+                .filter(x -> containsIgnoreCase(x.getValue(),value))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         this.addToHistory(value);

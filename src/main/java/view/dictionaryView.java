@@ -6,14 +6,9 @@ import controller.SearchTabListener;
 import model.dictionaryModel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 /**
