@@ -61,6 +61,22 @@ public class dictionaryView extends JFrame {
         this.setVisible(true);
     }
 
+    public JTextField getInputField() {
+        return inputField;
+    }
+
+    public void setInputField(JTextField inputField) {
+        this.inputField = inputField;
+    }
+
+    public JTextArea getWordResultArea() {
+        return WordResultArea;
+    }
+
+    public void setWordResultArea(JTextArea wordResultArea) {
+        WordResultArea = wordResultArea;
+    }
+
     public String getGameMode() {
         return gameMode;
     }
@@ -182,6 +198,7 @@ public class dictionaryView extends JFrame {
         titlesResult.setFont(headingText);
 
         WordResultArea = new JTextArea();
+        WordResultArea.setEditable(false);
         WordResultArea.setFont(normalText);
 
         JScrollPane resultScroll = new JScrollPane(WordResultArea
@@ -234,6 +251,7 @@ public class dictionaryView extends JFrame {
 
     protected JComponent historyScreen(){
         historyTextArea = new JTextArea();
+        historyTextArea.setEditable(false);
         historyTextArea.setFont(normalText);
 
         ArrayList<String> history = this.dictModel.getHistory();
@@ -262,6 +280,7 @@ public class dictionaryView extends JFrame {
         String[] gameModes = {"Find definition", "Find word"};
         comboBoxGame = new JComboBox<String>(gameModes);
         comboBoxGame.setFont(headingText);
+        comboBoxGame.setEditable(false);
         // set initial is Find definition
         comboBoxGame.setSelectedItem(0);
         // add listener
@@ -297,7 +316,6 @@ public class dictionaryView extends JFrame {
     }
 
     protected JPanel gameFinDefinition(){
-        Random randEngine = new Random();
         ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
@@ -344,7 +362,6 @@ public class dictionaryView extends JFrame {
     }
 
     protected JPanel gameFindWord(){
-        Random randEngine = new Random();
         ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption2 = this.dictModel.randomAWord();
@@ -397,10 +414,6 @@ public class dictionaryView extends JFrame {
         else
             gamePanel = this.gameFindWord();
         return gamePanel;
-    }
-
-    public String getTextInput(){
-        return inputField.getText();
     }
 
     public void searchWord(){
@@ -608,6 +621,11 @@ public class dictionaryView extends JFrame {
             listHistory.append(history.get(i)).append("\n");
         }
         historyTextArea.setText(listHistory.toString());
+    }
+
+    public void reloadSearchArea(){
+        this.inputField.setText("");
+        this.WordResultArea.setText("");
     }
 
     public void saveHistory(){

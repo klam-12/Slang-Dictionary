@@ -58,9 +58,12 @@ public class ScreenListener implements ChangeListener, WindowListener {
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() instanceof JTabbedPane pane) {
             int index = pane.getSelectedIndex();
-            // History tab
             if(index == 1) {
+                // History tab
                 this.dictView.reloadHistoryTextArea();
+            } else if (index == 0) {
+                // Search tab
+                this.dictView.reloadSearchArea();
             }
 
         }

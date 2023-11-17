@@ -156,13 +156,13 @@ public class dictionaryModel {
     public void editAWord(String key, String newVal){
         if(key == null || key.isEmpty())
             return;
-        this.currentDict.replace(key,newVal);
+        this.currentDict.replace(key.toUpperCase(),newVal);
     }
 
     public void deleteAWord(String key){
         if(key == null || key.isEmpty())
             return;
-        this.currentDict.remove(key);
+        this.currentDict.remove(key.toUpperCase());
     }
 
     public void reset(){

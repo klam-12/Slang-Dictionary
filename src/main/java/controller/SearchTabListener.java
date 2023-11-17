@@ -18,6 +18,9 @@ public class SearchTabListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String click = e.getActionCommand();
+        if(!(click.equals("Search word") || click.equals("Search definition"))){
+            this.dictView.reloadSearchArea();
+        }
         switch (click){
             case "Search word":
                 dictView.searchWord();
