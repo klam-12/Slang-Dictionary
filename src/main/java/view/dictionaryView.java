@@ -276,16 +276,12 @@ public class dictionaryView extends JFrame {
           gameContext = createGameMode(gameModes[0]);
 
         // ****** Footer
-        JLabel result = new JLabel("Wrong answer. Please try again");
-        result.setFont(normalText);
-
         JButton submitBtn = new JButton("Submit");
         submitBtn.setFont(normalText);
         submitBtn.addActionListener(gameListener);
 
         JPanel footer = new JPanel();
         footer.setLayout(new GridLayout(2,1));
-        //footer.add(result);
         footer.add(submitBtn);
 
 
@@ -415,15 +411,18 @@ public class dictionaryView extends JFrame {
             WordResultArea.setText("Not found word: " + input);
         }
         else {
-            WordResultArea.setText(input + " - " + result + "\n");
+            WordResultArea.setText(input.toUpperCase() + " - " + result + "\n");
         }
 
     }
 
-    // not finished
     public void searchDef(){
         String input = inputField.getText();
         Map<String, String> resultMap = this.dictModel.searchDefinition(input);
+        if(resultMap == null){
+            WordResultArea.setText("Not found definition: " + input);
+            return;
+        }
         String result = "";
         result = resultMap.keySet().stream()
                 .map(key -> key + " -> " + resultMap.get(key))

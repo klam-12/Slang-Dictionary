@@ -211,8 +211,16 @@ public class dictionaryModel {
     }
 
     public void addToHistory(String word){
-        if(word == null || word.isEmpty())
+        int size = this.history.size();
+        if(word == null || word.isEmpty()) {
             return;
+        }
+
+        if(word.equals(this.history.get(size-1)) || word.toUpperCase().equals(this.history.get(size-1))
+            || word.toLowerCase().equals(this.history.get(size-1))){
+            return;
+        }
+
         this.history.add(word);
     }
 
