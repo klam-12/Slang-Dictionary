@@ -413,7 +413,7 @@ public class dictionaryView extends JFrame {
 
     public void searchWord(){
         String input = inputField.getText();
-        String result = this.dictModel.searchKey(input.trim());
+        String result = this.dictModel.searchKey(input);
 
         if(result == null){
             WordResultArea.setText("Not found word: " + input);

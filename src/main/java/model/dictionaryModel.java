@@ -128,7 +128,7 @@ public class dictionaryModel {
             return null;
 
         String value = null;
-
+        key = key.trim();
         if(this.currentDict.get(key.toUpperCase()) != null){
             value = this.currentDict.get(key.toUpperCase());
         }
@@ -164,18 +164,21 @@ public class dictionaryModel {
     public void addAWord(String key, String val){
         if(key == null || key.isEmpty())
             return;
+        key = key.trim();
         this.currentDict.put(key.toUpperCase(),val);
     }
 
     public void editAWord(String key, String newVal){
         if(key == null || key.isEmpty())
             return;
+        key = key.trim();
         this.currentDict.replace(key.toUpperCase(),newVal);
     }
 
     public void deleteAWord(String key){
         if(key == null || key.isEmpty())
             return;
+        key = key.trim();
         this.currentDict.remove(key.toUpperCase());
     }
 
