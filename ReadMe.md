@@ -24,6 +24,8 @@
 ### 5. Link github:
 - https://github.com/klam-12/Slang-Dictionary
 ### 6. Tài liệu tham khảo:
+- Phần trăm tham khảo: 10%
+
 [1] [W3School - Java](https://www.w3schools.com/JS/default.asp)
 
 [2] [JavaPoint - Event Handling](https://www.javatpoint.com/event-handling-in-java)
@@ -37,3 +39,4 @@
 [6] [StackOverFlow](https://stackoverflow.com/questions/14018478/string-contains-ignore-case)
 
 [7] Tài liệu Môn học - Thầy Nguyễn Đức Huy, Nguyễn Văn Khiết, Nguyễn V. Vũ
+
