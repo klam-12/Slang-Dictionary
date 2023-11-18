@@ -169,7 +169,7 @@ public class dictionaryModel {
     }
 
     public void editAWord(String key, String newVal){
-        if(key == null || key.isEmpty())
+        if(key == null || key.isEmpty() || newVal == null || newVal.isEmpty())
             return;
         key = key.trim();
         this.currentDict.replace(key.toUpperCase(),newVal);

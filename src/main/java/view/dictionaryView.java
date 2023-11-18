@@ -457,7 +457,13 @@ public class dictionaryView extends JFrame {
                 "Input the definition",
                 "Add a Word",
                 JOptionPane.PLAIN_MESSAGE);
-        if(wordName == null){
+
+        if(wordName == null || wordDefinition == null){
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to add new word",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE );
             return;
         }
 
@@ -548,14 +554,22 @@ public class dictionaryView extends JFrame {
                     "Input the definition",
                     "Edit a Word",
                     JOptionPane.PLAIN_MESSAGE);
-
             // Edit successfully
-            this.dictModel.editAWord(wordName,wordDefinition);
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Edit successfully",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE );
+            if(!(wordDefinition == null || wordDefinition.isEmpty())) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Edit successfully",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            else {
+                this.dictModel.editAWord(wordName,wordDefinition);
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Failed to edit the word",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE );
+            }
         }
     }
 
