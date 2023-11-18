@@ -128,6 +128,9 @@ public class dictionaryView extends JFrame {
         this.historyTextArea = historyTextArea;
     }
 
+    /**
+     * Init the program
+     */
     private void init(){
         ScreenListener screenListener = new ScreenListener(this);
         this.setTitle("Slang Dictionary");
@@ -166,6 +169,10 @@ public class dictionaryView extends JFrame {
         this.add(dictionary, BorderLayout.CENTER);
     }
 
+    /**
+     * Create Search Screen
+     * @return Component contains Search screen
+     */
     protected JComponent searchScreen(){
         SearchTabListener searchListener = new SearchTabListener(this);
         // Text Container
@@ -244,6 +251,10 @@ public class dictionaryView extends JFrame {
         return searchSrc;
     }
 
+    /**
+     * Create History Screen
+     * @return Component contains History screen
+     */
     protected JComponent historyScreen(){
         historyTextArea = new JTextArea();
         historyTextArea.setEditable(false);
@@ -266,6 +277,10 @@ public class dictionaryView extends JFrame {
         return hisSrc;
     }
 
+    /**
+     * Create Game Screen
+     * @return Component contains Game screen
+     */
     protected JComponent gameScreen(){
         GamesListener gameListener = new GamesListener(this);
         // ****** Header
@@ -310,6 +325,10 @@ public class dictionaryView extends JFrame {
         return screen;
     }
 
+    /**
+     * Create a Panel of Game mode: Find Definition
+     * @return Panel contains game choices
+     */
     protected JPanel gameFinDefinition(){
         ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
@@ -356,6 +375,10 @@ public class dictionaryView extends JFrame {
         return games;
     }
 
+    /**
+     * Create a Panel of Game mode: Find Word
+     * @return Panel contains game choices
+     */
     protected JPanel gameFindWord(){
         ArrayList<String> wordNameForAnswer = this.dictModel.randomAWord();
         ArrayList<String> wordNameForOption1 = this.dictModel.randomAWord();
@@ -402,6 +425,11 @@ public class dictionaryView extends JFrame {
         return games;
     }
 
+    /**
+     * Support to create game mode
+     * @param mode is choice of user
+     * @return Panel of Game
+     */
     protected JPanel createGameMode(String mode){
         JPanel gamePanel;
         if(mode.equals("Find definition"))
@@ -411,6 +439,9 @@ public class dictionaryView extends JFrame {
         return gamePanel;
     }
 
+    /**
+     * Set the result after Searching word
+     */
     public void searchWord(){
         String input = inputField.getText();
         String result = this.dictModel.searchKey(input);
@@ -424,6 +455,9 @@ public class dictionaryView extends JFrame {
 
     }
 
+    /**
+     * Set the result after Searching definition
+     */
     public void searchDef(){
         String input = inputField.getText();
         Map<String, String> resultMap = this.dictModel.searchDefinition(input);
@@ -445,6 +479,9 @@ public class dictionaryView extends JFrame {
 
     }
 
+    /**
+     * Handle Add a word funtion
+     */
     public void addAWord(){
         String wordName = (String) JOptionPane.showInputDialog(
           this,
@@ -499,6 +536,9 @@ public class dictionaryView extends JFrame {
         }
     }
 
+    /**
+     * Handle Delete a word funtion
+     */
     public void deleteAWord(){
         String wordName = (String) JOptionPane.showInputDialog(
                 this,
@@ -529,6 +569,9 @@ public class dictionaryView extends JFrame {
         }
     }
 
+    /**
+     * Handle Edit a word funtion
+     */
     public void editAWord(){
         String wordName = (String) JOptionPane.showInputDialog(
                 this,
@@ -573,6 +616,9 @@ public class dictionaryView extends JFrame {
         }
     }
 
+    /**
+     * Handle reset function
+     */
     public void reset(){
         int choice = JOptionPane.showConfirmDialog(
                 this,
@@ -582,6 +628,9 @@ public class dictionaryView extends JFrame {
         }
     }
 
+    /**
+     * Handle Random a word function
+     */
     public void randomAWord(){
         ArrayList<String> wordName = this.dictModel.randomAWord();
         JOptionPane.showMessageDialog(
@@ -592,6 +641,10 @@ public class dictionaryView extends JFrame {
 
     }
 
+    /**
+     * Handle Game Screen
+     * @param mode is the choice of user
+     */
     public void setGameScreen(String mode){
         preScreenGame.remove(gameContext);
         gameContext = createGameMode(mode);
@@ -599,6 +652,10 @@ public class dictionaryView extends JFrame {
         this.setGameMode(mode);
     }
 
+    /**
+     * Check if user chooses the right answer or not
+     * @param mode is choice of user
+     */
     public void checkGame(String mode){
         if (this.getGameChoiceOfUser().equals(this.getGameAnswer())){
             JOptionPane.showMessageDialog(
@@ -617,6 +674,9 @@ public class dictionaryView extends JFrame {
         }
     }
 
+    /**
+     * Handle History function
+     */
     public void reloadHistoryTextArea(){
         ArrayList<String> history = this.dictModel.getHistory();
         if(history.isEmpty()){
@@ -632,15 +692,24 @@ public class dictionaryView extends JFrame {
         historyTextArea.setText(listHistory.toString());
     }
 
+    /**
+     * Set Search Field to initial state
+     */
     public void reloadSearchArea(){
         this.inputField.setText("");
         this.WordResultArea.setText("");
     }
 
+    /**
+     * Call to save file History
+     */
     public void saveHistory(){
         this.dictModel.exportHistory();
     }
 
+    /**
+     * Call to save database
+     */
     public void saveDatabase(){
         this.dictModel.exportDatabase();
     }

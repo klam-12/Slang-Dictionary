@@ -37,6 +37,9 @@ public class dictionaryModel {
         this.history = history;
     }
 
+    /**
+     * Read file to get data
+     */
     public void loadDatabase(){
         // Running from second times or above
         String filename = "database.txt";
@@ -100,8 +103,8 @@ public class dictionaryModel {
 
     }
 
-    /*
-    Export database to new file for next run
+    /**
+     * Export database to new file for next run
      */
     public void exportDatabase(){
         String filename = "database.txt";
@@ -123,6 +126,11 @@ public class dictionaryModel {
         }
     }
 
+    /**
+     * Search a word in dictionary
+     * @param key is input from user
+     * @return
+     */
     public String searchKey(String key){
         if(key == null || key.isEmpty())
             return null;
@@ -136,6 +144,12 @@ public class dictionaryModel {
         return value;
     }
 
+    /**
+     * Check if this string contains the given word
+     * @param str is string for checking
+     * @param searchStr is string needed to find
+     * @return true/false
+     */
     public boolean containsIgnoreCase(String str, String searchStr)     {
         if(str == null || searchStr == null) return false;
 
@@ -150,6 +164,11 @@ public class dictionaryModel {
         return false;
     }
 
+    /**
+     * Search all words that have the given definition
+     * @param value is the definition of the word
+     * @return Collection of words
+     */
     public Map<String, String> searchDefinition(String value){
         if(value == null || value.isEmpty())
             return null;
@@ -161,6 +180,11 @@ public class dictionaryModel {
         return subMap;
     }
 
+    /**
+     * Add a new word to dictionary
+     * @param key is the word
+     * @param val is the definition
+     */
     public void addAWord(String key, String val){
         if(key == null || key.isEmpty())
             return;
@@ -168,6 +192,11 @@ public class dictionaryModel {
         this.currentDict.put(key.toUpperCase(),val);
     }
 
+    /**
+     * Edit a word in the dictionary
+     * @param key is the word
+     * @param newVal is the definition
+     */
     public void editAWord(String key, String newVal){
         if(key == null || key.isEmpty() || newVal == null || newVal.isEmpty())
             return;
@@ -175,6 +204,10 @@ public class dictionaryModel {
         this.currentDict.replace(key.toUpperCase(),newVal);
     }
 
+    /**
+     * Delete a word in the dictionary
+     * @param key is the word
+     */
     public void deleteAWord(String key){
         if(key == null || key.isEmpty())
             return;
@@ -182,6 +215,9 @@ public class dictionaryModel {
         this.currentDict.remove(key.toUpperCase());
     }
 
+    /**
+     * Reset the dictionary to the original version
+     */
     public void reset(){
         this.currentDict.clear();
 
@@ -217,6 +253,10 @@ public class dictionaryModel {
 
     }
 
+    /**
+     * Random a word
+     * @return an ArrayList with 2 elements: Word and its definition
+     */
     public ArrayList<String> randomAWord(){
         List<String> keys = new ArrayList<String>(this.currentDict.keySet());
         ArrayList<String> result = new ArrayList<String>();
@@ -227,6 +267,10 @@ public class dictionaryModel {
         return result;
     }
 
+    /**
+     * Add a recently-search word to history for storage
+     * @param word is the word that has just been searched
+     */
     public void addToHistory(String word){
         int size = this.history.size();
         if(word == null || word.isEmpty()) {
@@ -241,6 +285,9 @@ public class dictionaryModel {
         this.history.add(word);
     }
 
+    /**
+     * Export history to file for storage
+     */
     public void exportHistory(){
         String filename = "history.txt";
         try {
@@ -261,6 +308,9 @@ public class dictionaryModel {
 
     }
 
+    /**
+     * Read data from history file
+     */
     public void readHistory() {
         String filename = "history.txt";
         String line = "";
