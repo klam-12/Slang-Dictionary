@@ -149,6 +149,7 @@ public class dictionaryModel {
      * @param str is string for checking
      * @param searchStr is string needed to find
      * @return true/false
+     * Ref: https://stackoverflow.com/questions/14018478/string-contains-ignore-case
      */
     public boolean containsIgnoreCase(String str, String searchStr)     {
         if(str == null || searchStr == null) return false;
